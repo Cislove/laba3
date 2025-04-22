@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Стартовая страница</title>
+    <link rel="stylesheet" href="resources/css/start_style.css"/>
+</head>
+<body>
+<header class="header">
+    <p>Рахимов Ильнар Ильдарович</p>
+    <p>Ису: 409442</p>
+    <p>Вариант: 10039</p>
+</header>
+<main class="content">
+    <div class="clock-container">
+        <p>Текущее время:</p>
+        <canvas id="canvas" width="500" height="500" >cccc</canvas>
+    </div>
+    <h:button styleClass="next-button" outcome="form" value="Перейти на следующую страницу"/>
+</main>
+<footer class="footer">
+    <p>© 2024</p>
+</footer>
+
+<h:outputScript>
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.strokeStyle = '#4e4e4e';
+    ctx.lineWidth = 30;
+    ctx.shadowBlur= 15;
+    ctx.shadowColor = '#4e4e4e'
+
+    function degToRad(degree){
+        var factor = Math.PI/180;
+        return degree*factor;
+    }
+
+    function renderTime(){
+        const hourActiveColor = '#39D98A',
+                minuteActiveColor = '#3E7BFA',
+                secondActiveColor = '#FDAC42';
+
+        const hourInactiveColor = '#3C4043',
+                minuteInactiveColor = '#2E3134',
+                secondInactiveColor = '#282A2D';
+
+        var now = new Date();
+        var today = now.toLocaleDateString();
+        var time = now.toLocaleTimeString();
+        var hrs = now.getHours();
+        var min = now.getMinutes();
+        var sec = now.getSeconds();
+        var mil = now.getMilliseconds();
+        var smoothsec = sec+(mil/1000);
+        var smoothmin = min+(smoothsec/60);
+
+        //Background
+        gradient = ctx.createRadialGradient(250, 250, 5, 250, 250, 300);
+        gradient.addColorStop(0, "#dbdbdb");
+        gradient.addColorStop(1, "#dbdbdb");
+        ctx.fillStyle = gradient;
+        // ctx.fillStyle = 'rgba(00 ,00 , 00, 1)';
+        ctx.fillRect(0, 0, 500, 500);
+        //Hours
+        ctx.beginPath();
+        ctx.strokeStyle = hourInactiveColor;
+        ctx.arc(250,250,180, degToRad(270), degToRad((359.99)-90));
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = hourActiveColor;
+        ctx.arc(250,250,180, degToRad(270), degToRad((hrs*30)-90));
+        ctx.stroke();
+        //Minutes
+        ctx.beginPath();
+        ctx.strokeStyle = minuteInactiveColor;
+        ctx.arc(250,250,150, degToRad(270), degToRad((359.99)-90));
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = minuteActiveColor;
+        ctx.arc(250,250,150, degToRad(270), degToRad((smoothmin*6)-90));
+        ctx.stroke();
+        //Seconds
+        ctx.beginPath();
+        ctx.strokeStyle = secondInactiveColor;
+        ctx.arc(250,250,120, degToRad(270), degToRad((359.99)-90));
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = secondActiveColor;
+        ctx.arc(250,250,120, degToRad(270), degToRad((smoothsec*6)-90));
+        ctx.stroke();
+        //Date
+        ctx.font = "25px Helvetica";
+        ctx.fillStyle = '#4e4e4e'
+        ctx.fillText(today, 188, 250);
+        //Time
+        ctx.font = "25px Helvetica";
+        ctx.fillStyle = '#4e4e4e';
+        ctx.fillText(time, 204, 280);
+
+    }
+    setInterval(renderTime, 10);
+</h:outputScript>
+</body>
+</html>
+

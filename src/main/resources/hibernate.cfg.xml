@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+    <id> 
+    <session-factory>
+        <!-- JDBC Database connection settings -->
+        <property name="hibernate.connection.datasource">java:/PostgresDS</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Hibernate settings -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Annotated classes -->
+        <mapping class="org.ifmo.laba3.Point"/>
+        <mapping class="org.ifmo.laba3.TableRow"/>
+    </session-factory>
+    </id>
+</hibernate-configuration>

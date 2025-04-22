@@ -1,0 +1,39 @@
+<project name="replace" default="replacestuff">
+    <target name="replacestuff">
+        <property file="replace/replace.txt"/>
+
+        <replaceregexp match="ConnectionDB" replace="${ConnectionDB}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+
+        <move file="target/alt-src/org/ifmo/laba3/ConnectionDB.java" tofile="target/alt-src/org/ifmo/laba3/A.java"/>
+
+        <replaceregexp match="FormBean" replace="${FormBean}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+
+        <move file="target/alt-src/org/ifmo/laba3/FormBean.java" tofile="target/alt-src/org/ifmo/laba3/B.java"/>
+
+        <replaceregexp match="Point" replace="${Point}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+
+        <move file="target/alt-src/org/ifmo/laba3/Point.java" tofile="target/alt-src/org/ifmo/laba3/${Point}.java"/>
+
+        <replaceregexp match="TableRow" replace="${TableRow}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+
+        <move file="target/alt-src/org/ifmo/laba3/TableRow.java" tofile="target/alt-src/org/ifmo/laba3/E.java"/>
+
+        <replaceregexp match="MyTable" replace="${MyTable}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+
+        <move file="target/alt-src/org/ifmo/laba3/MyTable.java" tofile="target/alt-src/org/ifmo/laba3/D.java"/>
+
+        <replaceregexp match="REMOVE_RECORDS" replace="${REMOVE_RECORDS}" flags="g" byline="true">
+            <fileset dir="target/alt-src"/>
+        </replaceregexp>
+    </target>
+</project>

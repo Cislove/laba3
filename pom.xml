@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.ifmo</groupId>
+    <artifactId>Laba3</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Laba3</name>
+    <packaging>jar</packaging>
+
+    <scm>
+        <connection>scm:git:git://github.com/youruser/yourrepo.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:youruser/yourrepo.git</developerConnection>
+        <url>https://github.com/youruser/yourrepo</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <junit.version>5.9.2</junit.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.faces</groupId>
+            <artifactId>jakarta.faces-api</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+        </dependency>
+
+    <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.10.12</version> <!-- Используйте актуальную версию -->
+    </dependency>
+
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>3.5.3</version>
+            </extension>
+        </extensions>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>assemble-revisions</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Используем descriptor, который опишет, какие файлы включать -->
+                            <descriptors>
+                                <descriptor>src/assembly/revisions.xml</descriptor>
+                            </descriptors>
+                            <!-- Название итогового архива -->
+                            <finalName>${project.artifactId}-revisions-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.11.2</version>
+                <executions>
+                    <!-- Чекаут предыдущей ревизии (HEAD~1) -->
+                    <execution>
+                        <id>checkout-rev-1</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>checkout</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Директория для ревизии 1 -->
+                            <checkoutDirectory>${project.build.directory}/revision1</checkoutDirectory>
+                            <!-- Указываем ревизию, например HEAD~1 -->
+                            <revision>HEAD~1</revision>
+                        </configuration>
+                    </execution>
+                    <!-- Чекаут ревизии HEAD~2 -->
+                    <execution>
+                        <id>checkout-rev-2</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>checkout</goal>
+                        </goals>
+                        <configuration>
+                            <checkoutDirectory>${project.build.directory}/revision2</checkoutDirectory>
+                            <revision>HEAD~2</revision>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Компиляция(сценарий compile)-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>compile-alt</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>17</source>
+                            <target>17</target>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/target/alt-src</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${project.build.directory}/classes-alt</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-alt-src</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/alt-src</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Сборка(сценарий build)-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <archive>
+                                <manifestFile>${project.build.directory}/manifest-additions.txt</manifestFile>
+                                <manifest>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                    <mainClass>org.ifmo.Laba3.FormBean</mainClass>
+                                </manifest>
+                            </archive>
+                            <includes>
+                                <include>**/*.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>alt-version</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>alt</classifier>
+                            <classesDirectory>${project.build.directory}/classes-alt</classesDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+             <!-- Плагин для тестирования (JUnit) -->
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0-M5</version>
+            <configuration>
+                <useFile>true</useFile>
+            </configuration>
+            <executions>
+                <execution>
+                <id>test</id>
+                <phase>test</phase> <!-- Запуск тестов в фазе test -->
+                <goals>
+                    <goal>test</goal>
+                </goals>
+                </execution>
+            </executions>
+            </plugin>
+
+
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                <id>generate-hash-manifest</id>
+                <phase>generate-resources</phase>
+                <configuration>
+                    <target>
+                    <property name="hashfile" value="${project.build.directory}/project-content.txt"/>
+                    <property name="manifestfile" value="${project.build.directory}/manifest-additions.txt"/>
+
+                    <!-- Очистка -->
+                    <delete file="${hashfile}" />
+                    <delete file="${manifestfile}" />
+
+                    <!-- Собираем содержимое всех файлов проекта -->
+                    <concat destfile="${hashfile}" encoding="UTF-8">
+                        <fileset dir="${basedir}" includes="**/*" excludes="target/**,.git/**"/>
+                    </concat>
+
+                    <!-- Считаем хеш -->
+                    <checksum file="${hashfile}" algorithm="MD5" property="project.md5" />
+
+                    <checksum file="${hashfile}" algorithm="SHA-1" property="project.sha1" />
+
+                    <!-- Создаём manifest-файл -->
+                    <echo file="${manifestfile}" append="true">Project-Hash-MD5: ${project.md5}</echo>
+                    <echo file="${manifestfile}" append="true"> </echo> 
+                    <echo file="${manifestfile}" append="true">Project-Hash-SHA1: ${project.sha1}</echo>
+                    <echo file="${manifestfile}" append="true"> </echo>
+                    </target>
+                </configuration>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                </execution>
+                <execution>
+                    <phase>post-integration-test</phase>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                        <target>
+                            <copy todir="reports/test">
+                                <fileset dir="target/surefire-reports">
+                                    <include name="*.xml"/>
+                                </fileset>
+                            </copy>
+                            <exec executable="git">
+                                <arg value="add"/>
+                                <arg value="reports/test/TEST-*.xml"/>
+                            </exec>
+                            <exec executable="git">
+                                <arg value="commit"/>
+                                <arg value="-m"/>
+                                <arg value="Add test report#3"/>
+                            </exec>
+                            <exec executable="git">
+                                <arg value="push"/>
+                            </exec>
+                        </target>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>replace-names</id>
+                    <phase>generate-sources</phase>
+                    <configuration>
+                        <target>
+                            <copy todir="target/alt-src">
+                                <fileset dir="src/main/java"/>
+                            </copy>
+                            <ant antfile="replace/replace.xml"/>
+                        </target>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+            </executions>
+            </plugin>
+
+            <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xml-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+                <execution>
+                <id>validate-xml</id>
+                <goals>
+                    <goal>validate</goal>
+                </goals>
+                <phase>verify</phase>
+                <configuration>
+                <validationSets>
+                    <validationSet>
+                        <dir>src/main/resources</dir> <!-- Папка с XML -->
+                            <!-- <includes>
+                            <include>*.xml</include>    
+                            </includes> -->
+                    </validationSet>
+                </validationSets>
+                </configuration>
+                </execution>
+            </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                <execution>
+                    <id>play-music</id>
+                    <phase>install</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>cmd</executable>
+                        <arguments>
+                            <argument>/c</argument>
+                            <argument>start</argument>
+                            <argument>music/music.mp3</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>build-rev-1</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>mvn</executable>
+                        <arguments>
+                            <argument>clean</argument>
+                            <argument>package</argument>
+                        </arguments>
+                        <!-- Рабочая директория для сборки ревизии 1 -->
+                        <workingDirectory>${project.build.directory}/revision1</workingDirectory>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>build-rev-2</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>mvn</executable>
+                        <arguments>
+                            <argument>clean</argument>
+                            <argument>package</argument>
+                        </arguments>
+                        <workingDirectory>${project.build.directory}/revision2</workingDirectory>
+                    </configuration>
+                </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+                <execution>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+                <phase>generate-sources</phase>
+                </execution>
+            </executions>
+            </plugin>
+
+
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>scp-to-remote</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp">
+                                    <classpath>
+                                    <path location="${settings.localRepository}/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar"/>
+                                    </classpath>
+                                </taskdef>
+                                <scp localfile="${project.build.directory}/${project.build.finalName}.jar"
+                                     remoteFile="S409442@se.ifmo.ru:/opi/lab3/${project.build.finalName}.jar"
+                                     trust="true"
+                                     verbose="true"
+                                     password="npIn#8843">
+                                </scp>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
+        </plugins>
+    </build>
+</project>

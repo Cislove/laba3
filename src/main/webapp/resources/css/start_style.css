@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #dbdbdb;
+    color: #333;
+}
+
+.header{
+    text-align: center;
+}
+
+.header {
+    background: #52806b;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 140px); /* Учитываем высоту шапки и подвала */
+    text-align: center;
+}
+
+.clock-container {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #52806b;
+}
+
+#clock {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.next-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background: #52806b;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.next-button:hover {
+    background: #52806b;
+}
+
+.footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+}

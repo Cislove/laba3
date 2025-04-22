@@ -1,0 +1,8 @@
+# Формат: что_заменить=на_что_заменить
+
+ConnectionDB=A
+FormBean=B
+Point=C
+MyTable=D
+TableRow=E
+REMOVE_RECORDS=DELETE_RECORDS

@@ -1,0 +1,12 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+    <deployment>
+        <exclusions>
+            <!-- Исключить встроенный JSF -->
+            <module name="javax.faces.api" />
+            <module name="org.jboss.as.jsf" />
+        </exclusions>
+        <dependencies>
+            <module name="org.postgresql" />
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

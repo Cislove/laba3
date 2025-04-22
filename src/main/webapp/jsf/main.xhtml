@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+    <meta charset="UTF-8"/>
+    <h:head>
+        <h:outputStylesheet name="css/main_style.css"/>
+    </h:head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Основная страница</title>
+</head>
+<body>
+    <header class="header">
+        <h2>Главная страница</h2>
+        <p>Рахимов Ильнар Ильдарович | ИСУ: 409442 | Вариант: 10039</p>
+    </header>
+    <main class="content">
+        <div id="graphic_and_input">
+            <section id="graphic">
+                <h3>График</h3>
+                <div class="chart-container">
+                    <canvas id="chart" width="500" height="500"/>
+                </div>
+            </section>
+            <section id="input">
+                <h3>Добавить точку</h3>
+                <h:form id="main_form">
+                    <label>Координата X: </label>
+                    <h:inputText id="inputX" value="#{formBean.x}">
+                        <f:validateDoubleRange minimum="-3.0" maximum="3.0"/>
+                    </h:inputText>
+                    <br/>
+                    <label>Координата Y: </label>
+                    <section id="yButtons">
+                        <h:commandLink value="-2" id="yButton1" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(-2)}" />
+                        </h:commandLink>   <br/>
+                        <h:commandLink value="-1.5" id="yButton2" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(-1.5)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="-1" id="yButton3" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(-1)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="-0.5" id="yButton4" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(-0.5)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="0" id="yButton5" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(-0)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="0.5" id="yButton6" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(0.5)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="1" id="yButton7" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(1)}" />
+                        </h:commandLink>  <br/>
+                        <h:commandLink value="1.5" id="yButton8" styleClass="y-button" onclick="highlightActiveButton(this)">
+                            <f:ajax execute="@form" listener="#{formBean.setY(1.5)}" />
+                        </h:commandLink>  <br/>
+                    </section>
+                    <label>Координата R: </label>
+                    <section id="rButtons">
+                        <h:inputHidden id="hiddenR" value="#{formBean.r}" />
+                        <h:commandButton value="1">
+                            <f:ajax execute="@form" render="hiddenR" onevent="updateHiddenField" listener="#{formBean.setR(1)}" />
+                        </h:commandButton>
+                        <h:commandButton value="2">
+                            <f:ajax execute="@form" render="hiddenR" onevent="updateHiddenField" listener="#{formBean.setR(2)}" />
+                        </h:commandButton>
+                        <h:commandButton value="3">
+                            <f:ajax execute="@form" render="hiddenR" onevent="updateHiddenField" listener="#{formBean.setR(3)}" />
+                        </h:commandButton>
+                        <h:commandButton value="4">
+                            <f:ajax execute="@form" render="hiddenR" onevent="updateHiddenField" listener="#{formBean.setR(4)}" />
+                        </h:commandButton>
+                        <h:commandButton value="5">
+                            <f:ajax execute="@form" render="hiddenR" onevent="updateHiddenField" listener="#{formBean.setR(5)}" />
+                        </h:commandButton>
+                    </section>
+                    <section id="submitButton">
+                        <h:commandButton styleClass="main-submit" value="Отправить" action="#{formBean.submit}"/>
+                        <h:commandButton styleClass="main-submit" value="Очистить" action="#{formBean.clear}"/>
+                    </section>
+                </h:form>
+            </section>
+        </div>
+        <section id="table">
+            <h:dataTable value="#{table.points}" var="entry" id="mytable">
+                <h:column>
+                    <f:facet name="header">Координата X</f:facet>
+                    #{entry.point.x}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Координата Y</f:facet>
+                    #{entry.point.y}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Радиус R</f:facet>
+                    #{entry.point.r}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Попадание</f:facet>
+                    #{entry.inArea}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Время</f:facet>
+                    #{entry.startTime}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Обработка запроса</f:facet>
+                    #{entry.processedTime}
+                </h:column>
+            </h:dataTable>
+        </section>
+    </main>
+    <h:form id="graph-form" style="display: none">
+        <h:inputText id="graph-x" value="#{formBean.x}" required="true"/>
+        <h:inputText id="graph-y" value="#{formBean.y}" required="true"/>
+        <h:inputText id="graph-r" value="#{formBean.r}" required="true"/>
+        <h:commandButton id="graph-button" value="Send" action="#{formBean.submit}">
+            <f:ajax execute="@form" onevent="updateHiddenField" render="mytable" />
+        </h:commandButton>
+    </h:form>
+</body>
+<h:outputScript name="scripts/main_script.js"/>
+</html>
