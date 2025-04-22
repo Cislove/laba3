@@ -25,6 +25,7 @@ public class TableRow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Embedded
     private Point point;
     @Column(name="in_area", nullable = false)
