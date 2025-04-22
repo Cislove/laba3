@@ -9,6 +9,7 @@
         <!-- Собираем все .jar-файлы из target/ -->
         <fileSet>
             <directory>${project.build.directory}/git_repo/target</directory>
+
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>*.jar</include>
