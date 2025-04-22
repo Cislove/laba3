@@ -10,17 +10,15 @@
     <name>Laba3</name>
     <packaging>jar</packaging>
 
-    <scm>
-        <connection>scm:git:git://github.com/youruser/yourrepo.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:youruser/yourrepo.git</developerConnection>
-        <url>https://github.com/youruser/yourrepo</url>
-    </scm>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
         <junit.version>5.9.2</junit.version>
+        <git.repo.url>file://${basedir}</git.repo.url>
+        <git.work.dir>${project.build.directory}/git_repo</git.work.dir>
+        <output.zip>${project.build.directory}/previous_revisions.zip</output.zip>
+        <git.repo.exists>true</git.repo.exists>
     </properties>
 
     <dependencies>
@@ -97,62 +95,69 @@
         </extensions>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.4.2</version>
-                <executions>
-                    <execution>
-                        <id>assemble-revisions</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Используем descriptor, который опишет, какие файлы включать -->
-                            <descriptors>
-                                <descriptor>src/assembly/revisions.xml</descriptor>
-                            </descriptors>
-                            <!-- Название итогового архива -->
-                            <finalName>${project.artifactId}-revisions-${project.version}</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.6.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>create-zip</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <finalName>previous_revisions</finalName>-->
+<!--                            <descriptors>-->
+<!--                                <descriptor>revisions/revisions.xml</descriptor>-->
+<!--                            </descriptors>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.11.2</version>
-                <executions>
-                    <!-- Чекаут предыдущей ревизии (HEAD~1) -->
-                    <execution>
-                        <id>checkout-rev-1</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>checkout</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Директория для ревизии 1 -->
-                            <checkoutDirectory>${project.build.directory}/revision1</checkoutDirectory>
-                            <!-- Указываем ревизию, например HEAD~1 -->
-                            <revision>HEAD~1</revision>
-                        </configuration>
-                    </execution>
-                    <!-- Чекаут ревизии HEAD~2 -->
-                    <execution>
-                        <id>checkout-rev-2</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>checkout</goal>
-                        </goals>
-                        <configuration>
-                            <checkoutDirectory>${project.build.directory}/revision2</checkoutDirectory>
-                            <revision>HEAD~2</revision>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-invoker-plugin</artifactId>-->
+<!--                <version>3.5.0</version>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash; Сборка для HEAD~1 &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>build-revision-1</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>run</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <projectsDirectory>${git.work.dir}</projectsDirectory>-->
+<!--                            <goals>-->
+<!--                                <goal>package</goal>-->
+<!--                            </goals>-->
+<!--                            <properties>-->
+<!--                                <rev>1</rev>-->
+<!--                            </properties>-->
+<!--                            <addOutputDirectory>false</addOutputDirectory>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    &lt;!&ndash; Сборка для HEAD~2 &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>build-revision-2</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>run</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <projectsDirectory>${git.work.dir}</projectsDirectory>-->
+<!--                            <goals>-->
+<!--                                <goal>package</goal>-->
+<!--                            </goals>-->
+<!--                            <properties>-->
+<!--                                <rev>2</rev>-->
+<!--                            </properties>-->
+<!--                            <addOutputDirectory>false</addOutputDirectory>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
 
             <!-- Компиляция(сценарий compile)-->
@@ -397,37 +402,65 @@
                         </arguments>
                     </configuration>
                 </execution>
-                <execution>
-                    <id>build-rev-1</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <executable>mvn</executable>
-                        <arguments>
-                            <argument>clean</argument>
-                            <argument>package</argument>
-                        </arguments>
-                        <!-- Рабочая директория для сборки ревизии 1 -->
-                        <workingDirectory>${project.build.directory}/revision1</workingDirectory>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>build-rev-2</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <executable>mvn</executable>
-                        <arguments>
-                            <argument>clean</argument>
-                            <argument>package</argument>
-                        </arguments>
-                        <workingDirectory>${project.build.directory}/revision2</workingDirectory>
-                    </configuration>
-                </execution>
+<!--                    <execution>-->
+<!--                        <id>get-commits</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>git</executable>-->
+<!--                            <workingDirectory>${git.work.dir}</workingDirectory>-->
+<!--                            <arguments>-->
+<!--                                <argument>rev-parse</argument>-->
+<!--                                <argument>HEAD~1</argument> &lt;!&ndash; Первая предыдущая ревизия &ndash;&gt;-->
+<!--                            </arguments>-->
+<!--                            <outputFile>${project.build.directory}/commit1.txt</outputFile>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>git-clone</id>-->
+<!--                        <phase>initialize</phase>-->
+<!--                        <goals><goal>exec</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>git</executable>-->
+<!--                            <arguments>-->
+<!--                                <argument>clone</argument>-->
+<!--                                <argument>${git.repo.url}</argument>-->
+<!--                                <argument>${git.work.dir}</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+
+<!--                    &lt;!&ndash; 2. Переключаемся на HEAD~1 &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>git-checkout-rev1</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals><goal>exec</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>git</executable>-->
+<!--                            <workingDirectory>${git.work.dir}</workingDirectory>-->
+<!--                            <arguments>-->
+<!--                                <argument>checkout</argument>-->
+<!--                                <argument>HEAD~1</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+
+<!--                    &lt;!&ndash; 3. Переключаемся на HEAD~2 &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>git-checkout-rev2</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals><goal>exec</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>git</executable>-->
+<!--                            <workingDirectory>${git.work.dir}</workingDirectory>-->
+<!--                            <arguments>-->
+<!--                                <argument>checkout</argument>-->
+<!--                                <argument>HEAD~2</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                 </executions>
             </plugin>
 
